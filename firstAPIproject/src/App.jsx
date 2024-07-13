@@ -1,15 +1,39 @@
 import React from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
-import RandomUsers from './RandomUsers';
+import PropertyTax from './components/PropertyTax';
+import RandomUsers from './components/RandomUsers';
+import RoadTypeNameUsers from './components/Road_type_nameUsers';
+import WardMaster from './components/WardMaster';
+
 function App() {
-  
-
-
     return (
-        <div>
-            <RandomUsers />
-        </div>
-        
+        <Router>
+            <div>
+                <nav className="navapp">
+                    <ul>
+                        <li>
+                            <Link to="/random-users">Zone Data</Link>
+                        </li>
+                        <li>
+                            <Link to="/road-type-name-users">Road Type Name Users</Link>
+                        </li>
+                        <li>
+                            <Link to="/property-tax">Property Tax</Link>
+                        </li>
+                        <li>
+                            <Link to="/ward-master">Ward Master</Link>
+                        </li>
+                    </ul>
+                </nav>
+                <Routes>
+                    <Route path="/random-users" element={<RandomUsers />} />
+                    <Route path="/road-type-name-users" element={<RoadTypeNameUsers />} />
+                    <Route path="/property-tax" element={<PropertyTax/>}/>
+                    <Route path="/ward-master" element={<WardMaster/>}/>
+                </Routes>
+            </div>
+        </Router>
     );
 }
 
