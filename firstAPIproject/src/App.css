@@ -6,6 +6,11 @@
   display: contents;
 }
 
+button {
+  width: 100px;
+  margin: 15px auto;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -52,14 +57,14 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: black;
-  color: #fff;
+  background: rgb(255, 255, 255);
+  color: #000000;
 }
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
-  font-size: 16px;
+  font-size: 14px;
   text-align: left;
 }
 
@@ -69,9 +74,57 @@ th, td {
 }
 
 th {
-  background-color: #000;
+  background-color: #fffefe;
 }
 
 tr:hover {
-  background-color: #000;
+  background-color: #fc9b9b;
+}
+input[type="text"], label {
+  background: #fff;
+  color: #000;
+  width: 200px;
+  margin: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+form label {
+  margin-bottom: 5px;
+}
+
+form input {
+  margin-bottom: 10px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+form button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #45a049;
 }
