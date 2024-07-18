@@ -11,7 +11,6 @@ const MunicipalTable = () => {
   // Function to fetch data from the API based on search terms
   const fetchData = () => {
     let url = `${apiUrlBase}/getAllMunicipalMaster`;
-    // Determine which search parameter to use
     if (muniName) {
       url = `${apiUrlBase}/getByMuniName?muniName=${encodeURIComponent(muniName)}`;
     } else if (commisName) {
@@ -23,8 +22,6 @@ const MunicipalTable = () => {
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        // Display error message to user or handle error state
-        // Example: setErrorMessage('Error fetching data. Please try again.');
       });
   };
 
@@ -33,29 +30,25 @@ const MunicipalTable = () => {
     fetchData();
   }, []);
 
-  // Function to handle deletion of a municipal record
-  const handleDelete = (id) => {
-    axios.put(`${apiUrlBase}/municipalMaster/update/${id}`, {
-      id: id,
-      suspendedStatus: true,
-      // other fields if required by the API
-    })
+  // Function to handle deletion of a municipal record (toggle suspended status)
+  const handleDelete = (id, currentStatus) => {
+    const newStatus = currentStatus === 0 ? 1 : 0;
+
+    axios.patch(`${apiUrlBase}/municipalMaster/suspendedStatus/${id}?suspendedStatus=${newStatus}`)
       .then(response => {
-        console.log('Municipal record suspended successfully');
-        // After suspension, fetch updated data
+        console.log('Municipal record suspended status updated successfully');
         fetchData();
       })
       .catch(error => {
-        console.error('Error suspending municipal record:', error);
+        console.error('Error updating suspended status of municipal record:', error);
       });
   };
 
   // Function to handle updating a municipal record
   const handleUpdate = (id) => {
-    axios.put(`${apiUrlBase}/municipalMaster/update/${id}`, {})
+    axios.get(`${apiUrlBase}/municipalMaster/update/${id}`, {})
       .then(response => {
         console.log(`Updated municipal record successfully with ID: ${id}`);
-        // After update, fetch updated data
         fetchData();
       })
       .catch(error => {
@@ -130,7 +123,7 @@ const MunicipalTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((municipal, index) => (
+          {data.filter(municipal => municipal.suspendedStatus === 0).map((municipal, index) => (
             <tr key={index}>
               <td>{municipal.id}</td>
               <td>{municipal.muniCode}</td>
@@ -150,7 +143,9 @@ const MunicipalTable = () => {
               <td>{municipal.addressLine2}</td>
               <td>
                 <button className="btn btn-info btn-sm" onClick={() => handleUpdate(municipal.id)}>Update</button>
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(municipal.id)}>Delete</button>
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(municipal.id, municipal.suspendedStatus)}>
+                  {municipal.suspendedStatus === 0 ? 'Suspend' : 'Unsuspend'}
+                </button>
               </td>
             </tr>
           ))}
