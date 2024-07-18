@@ -98,13 +98,15 @@ const PropertyTax = () => {
         }
     };
 
-    const handleSuspendedStatusChange = async (id, status) => {
+    const handleSuspendedStatusChange = async (id, currentStatus) => {
+        const newStatus = currentStatus === 0 ? 1 : 0;
         setLoading(true);
         try {
-            await axios.post(`http://192.168.29.245:8085/muncipal/api/propertyTaxComponent/suspendedStatus/${id}`, null, { params: { suspendedStatus: status } });
+            await axios.patch(`http://192.168.29.245:8085/muncipal/api/propertyTaxComponent/suspendedStatus/${id}?suspendedStatus=${newStatus}`);
+            console.log('Municipal record suspended status updated successfully');
             fetchPropertyTaxData();
         } catch (error) {
-            handleError(error, 'changing suspended status');
+            console.error('Error updating suspended status of municipal record:', error);
         } finally {
             setLoading(false);
         }
@@ -290,29 +292,25 @@ const PropertyTax = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {propertyTaxData.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.id}</td>
-                                    <td>{item.componentName}</td>
-                                    <td>{item.rateValue}</td>
-                                    <td>{item.calcValue}</td>
-                                    <td>{item.fyYear}</td>
-                                    <td>{item.isRateActive ? 'Active' : 'Inactive'}</td>
-                                    <td>{item.createdBy}</td>
-                                    <td>{item.createdDate}</td>
-                                    <td>{item.updatedBy}</td>
-                                    <td>{item.updatedDate}</td>
-                                    <td>{item.suspendedStatus ? 'Suspended' : 'Active'}</td>
-                                    <td>{item.municipalId}</td>
-                                    <td align="center">
-                                        <button className="btn btn-info btn-xs" onClick={() => handleFetchById(item.id)} title="Edit">EDIT</button>
-                                        <button className="btn btn-danger btn-xs" onClick={() => handleDelete(item.id)} title="Delete">DELETE</button>
-                                        <button
-                                            className={`btn btn-${item.suspendedStatus ? 'primary' : 'warning'} btn-xs`}
-                                            onClick={() => handleSuspendedStatusChange(item.id, item.suspendedStatus ? 0 : 1)}
-                                            title={item.suspendedStatus ? 'Unsuspend' : 'Suspend'}
-                                        >
-                                            {item.suspendedStatus ? 'UNSUSPEND' : 'SUSPEND'}
+                            {propertyTaxData.map((tax) => (
+                                <tr key={tax.id}>
+                                    <td>{tax.id}</td>
+                                    <td>{tax.componentName}</td>
+                                    <td>{tax.rateValue}</td>
+                                    <td>{tax.calcValue}</td>
+                                    <td>{tax.fyYear}</td>
+                                    <td>{tax.isRateActive ? 'Yes' : 'No'}</td>
+                                    <td>{tax.createdBy}</td>
+                                    <td>{tax.createdDate}</td>
+                                    <td>{tax.updatedBy}</td>
+                                    <td>{tax.updatedDate}</td>
+                                    <td>{tax.suspendedStatus}</td>
+                                    <td>{tax.municipalId}</td>
+                                    <td>
+                                        <button onClick={() => handleFetchById(tax.id)}>Edit</button>
+                                        <button onClick={() => handleDelete(tax.id)}>Delete</button>
+                                        <button onClick={() => handleSuspendedStatusChange(tax.id, tax.suspendedStatus)}>
+                                            {tax.suspendedStatus === 0 ? 'Suspend' : 'Unsuspend'}
                                         </button>
                                     </td>
                                 </tr>
@@ -320,7 +318,7 @@ const PropertyTax = () => {
                         </tbody>
                     </table>
                 ) : (
-                    <p>No property tax components available.</p>
+                    <p>No property tax components found.</p>
                 )
             )}
         </div>
